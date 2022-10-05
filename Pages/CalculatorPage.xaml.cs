@@ -1,4 +1,4 @@
-﻿namespace Calculator.Pages;
+namespace Calculator.Pages;
 using System.Data;
 
 public partial class CalculatorPage : ContentPage
@@ -44,12 +44,11 @@ public partial class CalculatorPage : ContentPage
 
     void OnSelectOperator(object sender, EventArgs e)
     {
-        LockNumberValue(resultText.Text);
-
-        currentState = -2;
         Button button = (Button)sender;
         string pressed = button.Text;
         mathOperator = pressed;
+        LockNumberValue(resultText.Text);
+        currentState = -2;
     }
 
     private void LockNumberValue(string text)
@@ -64,8 +63,8 @@ public partial class CalculatorPage : ContentPage
             else
             {
                 secondNumber = number;
+                OnCalculate(this, null);
             }
-
             currentEntry = string.Empty;
         }
     }
@@ -78,6 +77,7 @@ public partial class CalculatorPage : ContentPage
         decimalFormat = "N0";
         this.resultText.Text = "0";
         currentEntry = string.Empty;
+        this.CurrentCalculation.Text = string.Empty;
     }
 
     void OnCalculate(object sender, EventArgs e)
@@ -86,9 +86,10 @@ public partial class CalculatorPage : ContentPage
         {
             if(secondNumber == 0)
                 LockNumberValue(resultText.Text);
+
             double result = Calculator.Calculate(firstNumber, secondNumber, mathOperator);
-            DataTable dt = new DataTable();
-            this.CurrentCalculation.Text = Convert.ToString(dt.Compute("3 * (2+4)",""));
+
+            this.CurrentCalculation.Text = $"{firstNumber} {mathOperator} {secondNumber}";
             this.resultText.Text = result.ToTrimmedString(decimalFormat);
             firstNumber = result;
             secondNumber = 0;
@@ -122,7 +123,11 @@ public partial class CalculatorPage : ContentPage
     }
 
     void OnSqrt(Object sender, EventArgs e) {
+        
     }
     void OnMod(Object sender, EventArgs e) {
+        mathOperator = "%";
+        LockNumberValue(resultText.Text);
+        currentState = -2;
     }
 }
